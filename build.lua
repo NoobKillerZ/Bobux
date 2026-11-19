@@ -323,9 +323,47 @@ for _, name in ipairs({ "Action", "State", "Notify", "ClickFX", "Leaderboard" })
 end
 
 -- Los archivos .luau son los mismos que sincroniza Script Sync con Studio.
-make("ModuleScript", { Name = "Config", Source = fs.readFile("ReplicatedStorage/Config.luau") }, replicated)
-make("Script", { Name = "GameServer", Source = fs.readFile("ServerScriptService/GameServer.server.luau") }, serverScripts)
-make("LocalScript", { Name = "Client", Source = fs.readFile("StarterPlayerScripts/Client.local.luau") }, playerScripts)
+-- Se agregan todos los que haya en cada carpeta, asi cualquier script nuevo
+-- que llegue desde GitHub queda incluido al regenerar el place.
+local function scriptsIn(folder, suffix)
+	local result = {}
+	local ok, entries = pcall(fs.readDir, folder)
+	if not ok then return result end
+	for _, entry in ipairs(entries) do
+		if #entry > #suffix and entry:sub(-#suffix) == suffix then
+			table.insert(result, entry)
+		end
+	end
+	table.sort(result)
+	return result
+end
+
+local function scriptName(file, suffix)
+	return file:sub(1, -#suffix - 1)
+end
+
+for _, file in ipairs(scriptsIn("ReplicatedStorage", ".luau")) do
+	make("ModuleScript", {
+		Name = scriptName(file, ".luau"),
+		Source = fs.readFile("ReplicatedStorage/" .. file),
+	}, replicated)
+end
+
+for _, file in ipairs(scriptsIn("ServerScriptService", ".server.luau")) do
+	make("Script", {
+		Name = scriptName(file, ".server.luau"),
+		Source = fs.readFile("ServerScriptService/" .. file),
+	}, serverScripts)
+end
+
+for _, suffix in ipairs({ ".client.luau", ".local.luau" }) do
+	for _, file in ipairs(scriptsIn("StarterPlayerScripts", suffix)) do
+		make("LocalScript", {
+			Name = scriptName(file, suffix),
+			Source = fs.readFile("StarterPlayerScripts/" .. file),
+		}, playerScripts)
+	end
+end
 
 local output = roblox.serializePlace(game)
 fs.writeFile(OUTPUT, output)
