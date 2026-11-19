@@ -24,13 +24,14 @@ Haz doble clic en **`sync-from-github.bat`** y deja la ventana abierta. Cada 30 
 
 - Si hay cambios nuevos, los baja a esta carpeta.
 - Script Sync aplica los cambios de `.luau` dentro de Studio automáticamente.
+- Si el cambio está en `build.lua` o en un `.rbxl`, el vigilante **cierra Studio de forma ordenada, ejecuta `build.lua` y vuelve a abrir `Place1.rbxl`**. Si Studio te pregunta si quieres guardar, responde y el proceso continúa solo en el siguiente ciclo; nunca se fuerza el cierre para no perder trabajo.
 - Si detectas que no se aplica nada, revisa la ventana del vigilante: si hay cambios locales sin commitear, se detiene para no sobrescribirlos (usa `sync-from-github.ps1 -DiscardLocal` si quieres que gane GitHub siempre).
 
 ### 3. Flujo normal
 
 1. Editas un archivo en GitHub (por ejemplo `ServerScriptService/GameServer.server.luau`) y haces commit en `main`.
 2. Esperas ~30 s.
-3. El script cambia en Studio sin cerrarlo.
+3. El script cambia en Studio sin cerrarlo. Si tocaste `build.lua` o un place, Studio se cierra y se reabre solo con la versión regenerada.
 
 > Si editas el código dentro de Studio, Script Sync escribirá el archivo en disco. Haz commit de ese cambio antes de editar el mismo archivo en GitHub, o el vigilante se saltará el pull para protegerlo.
 
@@ -96,7 +97,7 @@ Mientras un `Id` siga siendo `0`, el botón muestra "⚠ Configura el ID".
 
 - Publica una vez desde Studio. Para subir cambios: **File > Save to Roblox**.
 - Los cambios de código se ven en Studio sin regenerar nada.
-- Si cambias `build.lua` o un `.rbxl` en GitHub: cierra Studio, ejecuta `build.bat` y vuelve a abrir el place. El script se niega a escribir si detecta `Place1.rbxl.lock`.
+- Si cambias `build.lua` o un `.rbxl` en GitHub, el vigilante hace el cierre → `build.lua` → reapertura por ti. `build.bat` sigue disponible para usarlo a mano; se niega a escribir si detecta `Place1.rbxl.lock`.
 
 ## Balanceo rápido
 
