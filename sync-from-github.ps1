@@ -118,6 +118,7 @@ function Open-Studio {
 }
 
 $script:StudioExe = $null
+$script:pendingBuild = $false
 
 Log "Bobux: GitHub (main) -> carpeta local -> Studio"
 Log "Carpeta: $repo"
@@ -153,15 +154,20 @@ while ($true) {
                 })
 
                 if ($needsBuild.Count -gt 0) {
-                    if (Close-StudioGracefully) {
-                        if (Invoke-Build) {
-                            Open-Studio -ExePath $script:StudioExe
-                            Log "Listo: los cambios del build ya estan en Studio."
-                        }
-                    }
+                    $script:pendingBuild = $true
                 }
                 else {
                     Log "Cambios de codigo: Script Sync los aplica solo en Studio."
+                }
+            }
+        }
+
+        if ($script:pendingBuild) {
+            if (Close-StudioGracefully) {
+                if (Invoke-Build) {
+                    Open-Studio -ExePath $script:StudioExe
+                    $script:pendingBuild = $false
+                    Log "Listo: los cambios del build ya estan en Studio."
                 }
             }
         }
