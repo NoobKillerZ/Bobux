@@ -322,9 +322,10 @@ for _, name in ipairs({ "Action", "State", "Notify", "ClickFX", "Leaderboard" })
 	make("RemoteEvent", { Name = name }, remotes)
 end
 
-make("ModuleScript", { Name = "Config", Source = fs.readFile("src/Config.lua") }, replicated)
-make("Script", { Name = "GameServer", Source = fs.readFile("src/Server.lua") }, serverScripts)
-make("LocalScript", { Name = "Client", Source = fs.readFile("src/Client.lua") }, playerScripts)
+-- Los archivos .luau son los mismos que sincroniza Script Sync con Studio.
+make("ModuleScript", { Name = "Config", Source = fs.readFile("ReplicatedStorage/Config.luau") }, replicated)
+make("Script", { Name = "GameServer", Source = fs.readFile("ServerScriptService/GameServer.server.luau") }, serverScripts)
+make("LocalScript", { Name = "Client", Source = fs.readFile("StarterPlayerScripts/Client.local.luau") }, playerScripts)
 
 local output = roblox.serializePlace(game)
 fs.writeFile(OUTPUT, output)

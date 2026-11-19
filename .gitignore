@@ -1,0 +1,9 @@
+# Archivos bloqueo de Roblox Studio
+*.lock
+
+# Binario local de Lune (no se sube al repo; build.bat lo usa en esta PC)
+.tools/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
