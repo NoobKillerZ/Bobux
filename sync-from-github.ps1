@@ -10,7 +10,8 @@ param(
     [int]$IntervalSeconds = 30,
     [int]$CloseTimeoutSeconds = 45,
     [switch]$DiscardLocal,
-    [switch]$NoStudioRestart
+    [switch]$NoStudioRestart,
+    [switch]$ForceBuild
 )
 
 $ErrorActionPreference = "Stop"
@@ -118,7 +119,7 @@ function Open-Studio {
 }
 
 $script:StudioExe = $null
-$script:pendingBuild = $false
+$script:pendingBuild = [bool]$ForceBuild
 
 Log "Bobux: GitHub (main) -> carpeta local -> Studio"
 Log "Carpeta: $repo"
